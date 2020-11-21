@@ -2,7 +2,7 @@ package eu.getmangos.controllers;
 
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 
 import eu.getmangos.entities.Instance;
 
-@RequestScoped
+@ApplicationScoped
 public class InstanceController {
     @Inject private Logger logger;
 
