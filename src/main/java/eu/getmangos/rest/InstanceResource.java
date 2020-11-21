@@ -21,7 +21,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import eu.getmangos.dto.CreatureRespawnDTO;
 import eu.getmangos.dto.GameobjectRespawnDTO;
 import eu.getmangos.dto.InstanceDTO;
-import eu.getmangos.entities.Instance;
 
 public interface InstanceResource {
 

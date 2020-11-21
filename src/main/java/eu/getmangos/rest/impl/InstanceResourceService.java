@@ -3,7 +3,7 @@ package eu.getmangos.rest.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -26,7 +26,7 @@ import eu.getmangos.mapper.GameobjectRespawnMapper;
 import eu.getmangos.mapper.InstanceMapper;
 import eu.getmangos.rest.InstanceResource;
 
-@RequestScoped
+@ApplicationScoped
 @Path("/v1")
 @Tag(name = "instance")
 public class InstanceResourceService implements InstanceResource {
