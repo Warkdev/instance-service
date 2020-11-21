@@ -8,7 +8,13 @@ This project is educational, this is a Rest API based on [Mangos Character Datab
 - Characte links to instances
 - Creature Respawns
 - Gameobject Respawns
-- Corpse
+
+The managed database tables are:
+- [instance](https://www.getmangos.eu/wiki/referenceinfo/dbinfo/characterdb/mangoszerochardb/instance-r1547/)
+- [creature_respawn](https://www.getmangos.eu/wiki/referenceinfo/dbinfo/characterdb/mangoszerochardb/creature_respawn-r1529/)
+- [gameobject_respawn](https://www.getmangos.eu/wiki/referenceinfo/dbinfo/characterdb/mangoszerochardb/gameobject_respawn-r1538/)
+- [character_instance](https://www.getmangos.eu/wiki/referenceinfo/dbinfo/characterdb/mangoszerochardb/character_instance-r1515/)
+- [group_instance](https://www.getmangos.eu/wiki/referenceinfo/dbinfo/characterdb/mangoszerochardb/group_instance-r1541/)
 
 # OpenAPI
 
