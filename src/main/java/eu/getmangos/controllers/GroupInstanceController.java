@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 
 import eu.getmangos.entities.GroupInstance;
+import eu.getmangos.entities.Instance;
 
 @ApplicationScoped
 public class GroupInstanceController {
@@ -19,6 +20,8 @@ public class GroupInstanceController {
 
     @PersistenceContext(name = "CHAR_PU")
     private EntityManager em;
+
+    @Inject private InstanceController instanceController;
 
     /**
      * Create a new group instance in the database.
@@ -28,6 +31,13 @@ public class GroupInstanceController {
     @Transactional
     public void create(GroupInstance link) throws DAOException {
         logger.debug("create() entry.");
+
+        Instance i = instanceController.find(link.getGroupInstancePK().getInstance());
+
+        if (i == null) {
+            logger.debug("Instance does not exist, can't create the respawn timer");
+            throw new DAOException("Instance doesn't exist.");
+        }
 
         try {
             em.persist(link);

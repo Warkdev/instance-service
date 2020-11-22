@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 
 import eu.getmangos.entities.CreatureRespawn;
+import eu.getmangos.entities.Instance;
 
 @ApplicationScoped
 public class CreatureRespawnController {
@@ -19,6 +20,8 @@ public class CreatureRespawnController {
 
     @PersistenceContext(name = "CHAR_PU")
     private EntityManager em;
+
+    @Inject private InstanceController instanceController;
 
     /**
      * Create a new creature respawn in the database.
@@ -28,6 +31,13 @@ public class CreatureRespawnController {
     @Transactional
     public void create(CreatureRespawn respawn) throws DAOException {
         logger.debug("create() entry.");
+
+        Instance i = instanceController.find(respawn.getCreatureRespawnPK().getInstance());
+
+        if (i == null) {
+            logger.debug("Instance does not exist, can't create the respawn timer");
+            throw new DAOException("Instance doesn't exist.");
+        }
 
         try {
             em.persist(respawn);
