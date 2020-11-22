@@ -21,6 +21,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import eu.getmangos.dto.CharacterInstanceDTO;
 import eu.getmangos.dto.CreatureRespawnDTO;
 import eu.getmangos.dto.GameobjectRespawnDTO;
+import eu.getmangos.dto.GroupInstanceDTO;
 import eu.getmangos.dto.InstanceDTO;
 
 public interface InstanceResource {
@@ -446,4 +447,107 @@ public interface InstanceResource {
             @APIResponse(responseCode = "500", description = "An unexpected even occured")
         }
     )
-    public Response deleteCharacterInstance(@PathParam("instance_id") Integer instanceId, @PathParam("guid") Integer guid);}
+    public Response deleteCharacterInstance(@PathParam("instance_id") Integer instanceId, @PathParam("guid") Integer guid);
+
+    @GET
+    @Path("/{instance_id}/group")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Retrieves a list of group links for the given instance from the database.",
+        description = "This API is returning a list of group links from the database. A missing page and page size will return the first 20 results."
+    )
+    @APIResponses(
+        value = {
+            @APIResponse(responseCode = "200", description = "A list of group links", content = @Content(
+                        mediaType = "application/json", schema = @Schema(implementation = GameobjectRespawnDTO.class)
+                )
+            ),
+            @APIResponse(responseCode = "400", description = "Error with the request"),
+            @APIResponse(responseCode = "500", description = "An unexpected event occured")
+        }
+    )
+    public Response findAllGroupInstance(@PathParam("instance_id") Integer instanceId, @QueryParam("page") Integer page, @QueryParam("page_size") Integer pageSize);
+
+    @GET
+    @Path("/{instance_id}/group/{guid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Retrieves a specific group link for the given instance from the database.",
+        description = "This API is returning a specific group link from the database."
+    )
+    @APIResponses(
+        value = {
+            @APIResponse(responseCode = "200", description = "A list of group links timers", content = @Content(
+                        mediaType = "application/json", schema = @Schema(implementation = GroupInstanceDTO.class)
+                )
+            ),
+            @APIResponse(responseCode = "400", description = "Error with the request"),
+            @APIResponse(responseCode = "404", description = "Link not found"),
+            @APIResponse(responseCode = "500", description = "An unexpected event occured")
+        }
+    )
+    public Response findGroupInstance(@PathParam("instance_id") Integer instanceId, @PathParam("guid") Integer guid);
+
+    @POST
+    @Path("/{instance_id}/group")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Creates a new group link within the database for the given instance.",
+        description = "This API is creating a new group link within the database."
+    )
+    @APIResponses(
+        value = {
+            @APIResponse(responseCode = "201", description = "The link has been created"),
+            @APIResponse(responseCode = "400", description = "Error with the request"),
+            @APIResponse(responseCode = "500", description = "An unexpected event occured")
+        }
+    )
+    public Response createGroupInstance(@PathParam("instance_id") Integer instanceId, GroupInstanceDTO entity);
+
+    @PUT
+    @Path("/{instance_id}/group/{guid}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Updates a group link within the database.",
+        description = "This API is updating a group link within the database."
+    )
+    @APIResponses(
+        value = {
+            @APIResponse(responseCode = "200", description = "The group link has been updated"),
+            @APIResponse(responseCode = "400", description = "Error with the request"),
+            @APIResponse(responseCode = "500", description = "An unexpected event occured")
+        }
+    )
+    public Response updateGroupInstance(@PathParam("instance_id") Integer instanceId, @PathParam("guid") Integer guid, GroupInstanceDTO entity);
+
+    @DELETE
+    @Path("/{instance_id}/group")
+    @Operation(summary = "Delete all group link for the given instance",
+        description = "This API is deleting all existing group links for the given instance ID."
+    )
+    @APIResponses(
+        value = {
+            @APIResponse(responseCode = "204", description = "The group links has been deleted", content = @Content(
+                        mediaType = "application/json"
+                )
+            ),
+            @APIResponse(responseCode = "400", description = "Error with the request"),
+            @APIResponse(responseCode = "500", description = "An unexpected even occured")
+        }
+    )
+    public Response deleteAllGroupInstance(@PathParam("instance_id") Integer instanceId);
+
+    @DELETE
+    @Path("/{instance_id}/group/{guid}")
+    @Operation(summary = "Delete a group link",
+        description = "This API is deleting an existing group link based on the provided id."
+    )
+    @APIResponses(
+        value = {
+            @APIResponse(responseCode = "204", description = "The group link has been deleted", content = @Content(
+                        mediaType = "application/json"
+                )
+            ),
+            @APIResponse(responseCode = "400", description = "Error with the request"),
+            @APIResponse(responseCode = "500", description = "An unexpected even occured")
+        }
+    )
+    public Response deleteGroupInstance(@PathParam("instance_id") Integer instanceId, @PathParam("guid") Integer guid);
+}

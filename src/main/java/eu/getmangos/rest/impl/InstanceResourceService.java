@@ -15,18 +15,22 @@ import eu.getmangos.controllers.CharacterInstanceController;
 import eu.getmangos.controllers.CreatureRespawnController;
 import eu.getmangos.controllers.DAOException;
 import eu.getmangos.controllers.GameobjectRespawnController;
+import eu.getmangos.controllers.GroupInstanceController;
 import eu.getmangos.controllers.InstanceController;
 import eu.getmangos.dto.CharacterInstanceDTO;
 import eu.getmangos.dto.CreatureRespawnDTO;
 import eu.getmangos.dto.GameobjectRespawnDTO;
+import eu.getmangos.dto.GroupInstanceDTO;
 import eu.getmangos.dto.InstanceDTO;
 import eu.getmangos.entities.CharacterInstance;
 import eu.getmangos.entities.CreatureRespawn;
 import eu.getmangos.entities.GameobjectRespawn;
+import eu.getmangos.entities.GroupInstance;
 import eu.getmangos.entities.Instance;
 import eu.getmangos.mapper.CharacterInstanceMapper;
 import eu.getmangos.mapper.CreatureRespawnMapper;
 import eu.getmangos.mapper.GameobjectRespawnMapper;
+import eu.getmangos.mapper.GroupInstanceMapper;
 import eu.getmangos.mapper.InstanceMapper;
 import eu.getmangos.rest.InstanceResource;
 
@@ -46,6 +50,8 @@ public class InstanceResourceService implements InstanceResource {
     private GameobjectRespawnController gameobjectRespawnController;
     @Inject
     private CharacterInstanceController characterInstanceController;
+    @Inject
+    private GroupInstanceController groupInstanceController;
 
     @Inject
     private InstanceMapper instanceMapper;
@@ -55,6 +61,8 @@ public class InstanceResourceService implements InstanceResource {
     private GameobjectRespawnMapper gameobjectMapper;
     @Inject
     private CharacterInstanceMapper characterMapper;
+    @Inject
+    private GroupInstanceMapper groupMapper;
 
     @Override
     @Tag(name = "instance")
@@ -527,4 +535,114 @@ public class InstanceResourceService implements InstanceResource {
         return Response.status(204).build();
     }
 
+    @Override
+    @Tag(name = "group")
+    public Response findAllGroupInstance(Integer instanceId, Integer page, Integer pageSize) {
+        logger.debug("findAllGroupInstance() entry.");
+
+        if (page == null) {
+            page = 1;
+        }
+
+        if (pageSize == null) {
+            pageSize = 20;
+        }
+
+        if (pageSize > 100) {
+            pageSize = 100;
+        }
+
+        List<GroupInstanceDTO> list = new ArrayList<>();
+
+        try {
+            for (GroupInstance link : groupInstanceController.findAllByInstance(instanceId, page,
+                    pageSize)) {
+                list.add(groupMapper.map(link));
+            }
+        } catch (DAOException dao) {
+            return Response.status(404).entity(list).build();
+        }
+
+        logger.debug("findAllGroupInstance() exit.");
+
+        return Response.status(200).entity(list).build();
+    }
+
+    @Override
+    @Tag(name = "group")
+    public Response findGroupInstance(Integer instanceId, Integer guid) {
+        logger.debug("findGroupInstance() entry.");
+
+        GroupInstance entity = null;
+
+        try {
+            entity = groupInstanceController.find(guid, instanceId);
+        } catch (DAOException dao) {
+            logger.debug("Error while retrieving the group link " + dao.getMessage());
+            return Response.status(500).build();
+        } finally {
+            logger.debug("findGroupInstance() exit.");
+        }
+
+        if (entity == null) {
+            return Response.status(404).build();
+        }
+
+        return Response.status(200).entity(groupMapper.map(entity)).build();
+    }
+
+    @Override
+    @Tag(name = "group")
+    public Response createGroupInstance(Integer instanceId, GroupInstanceDTO entity) {
+        try {
+            entity.setInstance(instanceId);
+            this.groupInstanceController.create(groupMapper.map(entity));
+        } catch (DAOException daoEx) {
+            return Response.status(400).entity(daoEx.getMessage()).build();
+        } catch (Exception ex) {
+            return Response.status(500).entity(ex.getMessage()).build();
+        }
+        return Response.status(201).entity("Group link has been created.").build();
+    }
+
+    @Override
+    @Tag(name = "group")
+    public Response updateGroupInstance(Integer instanceId, Integer guid, GroupInstanceDTO entity) {
+        try {
+            entity.setLeaderguid(guid);
+            entity.setInstance(instanceId);
+            this.groupInstanceController.update(groupMapper.map(entity));
+        } catch (DAOException daoEx) {
+            return Response.status(400).entity(daoEx.getMessage()).build();
+        } catch (Exception ex) {
+            return Response.status(500).entity(ex.getMessage()).build();
+        }
+        return Response.status(200).entity("Group link has been updated.").build();
+    }
+
+    @Override
+    @Tag(name = "group")
+    public Response deleteGroupInstance(Integer instanceId, Integer guid) {
+        try {
+            this.groupInstanceController.delete(instanceId, guid);
+        } catch (DAOException daoEx) {
+            return Response.status(400).entity(daoEx.getMessage()).build();
+        } catch (Exception ex) {
+            return Response.status(500).entity(ex.getMessage()).build();
+        }
+        return Response.status(204).build();
+    }
+
+    @Override
+    @Tag(name = "group")
+    public Response deleteAllGroupInstance(Integer instanceId) {
+        try {
+            this.groupInstanceController.deleteAllByInstance(instanceId);
+        } catch (DAOException daoEx) {
+            return Response.status(400).entity(daoEx.getMessage()).build();
+        } catch (Exception ex) {
+            return Response.status(500).entity(ex.getMessage()).build();
+        }
+        return Response.status(204).build();
+    }
 }
