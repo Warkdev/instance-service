@@ -18,6 +18,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import eu.getmangos.dto.CharacterInstanceDTO;
 import eu.getmangos.dto.CreatureRespawnDTO;
 import eu.getmangos.dto.GameobjectRespawnDTO;
 import eu.getmangos.dto.InstanceDTO;
@@ -345,4 +346,104 @@ public interface InstanceResource {
     )
     public Response deleteGameobjectRespawnTimer(@PathParam("instance_id") Integer instanceId, @PathParam("guid") Integer guid);
 
-}
+    @GET
+    @Path("/{instance_id}/character")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Retrieves a list of character links for the given instance from the database.",
+        description = "This API is returning a list of character links from the database. A missing page and page size will return the first 20 results."
+    )
+    @APIResponses(
+        value = {
+            @APIResponse(responseCode = "200", description = "A list of character links", content = @Content(
+                        mediaType = "application/json", schema = @Schema(implementation = GameobjectRespawnDTO.class)
+                )
+            ),
+            @APIResponse(responseCode = "400", description = "Error with the request"),
+            @APIResponse(responseCode = "500", description = "An unexpected event occured")
+        }
+    )
+    public Response findAllCharacterInstance(@PathParam("instance_id") Integer instanceId, @QueryParam("page") Integer page, @QueryParam("page_size") Integer pageSize);
+
+    @GET
+    @Path("/{instance_id}/character/{guid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Retrieves a specific character link for the given instance from the database.",
+        description = "This API is returning a specific character link from the database."
+    )
+    @APIResponses(
+        value = {
+            @APIResponse(responseCode = "200", description = "A list of character links timers", content = @Content(
+                        mediaType = "application/json", schema = @Schema(implementation = CharacterInstanceDTO.class)
+                )
+            ),
+            @APIResponse(responseCode = "400", description = "Error with the request"),
+            @APIResponse(responseCode = "404", description = "Link not found"),
+            @APIResponse(responseCode = "500", description = "An unexpected event occured")
+        }
+    )
+    public Response findCharacterInstance(@PathParam("instance_id") Integer instanceId, @PathParam("guid") Integer guid);
+
+    @POST
+    @Path("/{instance_id}/character")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Creates a new character link within the database for the given instance.",
+        description = "This API is creating a new character link within the database."
+    )
+    @APIResponses(
+        value = {
+            @APIResponse(responseCode = "201", description = "The link has been created"),
+            @APIResponse(responseCode = "400", description = "Error with the request"),
+            @APIResponse(responseCode = "500", description = "An unexpected event occured")
+        }
+    )
+    public Response createCharacterInstance(@PathParam("instance_id") Integer instanceId, CharacterInstanceDTO entity);
+
+    @PUT
+    @Path("/{instance_id}/character/{guid}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Updates a character link within the database.",
+        description = "This API is updating a character link within the database."
+    )
+    @APIResponses(
+        value = {
+            @APIResponse(responseCode = "200", description = "The character link has been updated"),
+            @APIResponse(responseCode = "400", description = "Error with the request"),
+            @APIResponse(responseCode = "500", description = "An unexpected event occured")
+        }
+    )
+    public Response updateCharacterInstance(@PathParam("instance_id") Integer instanceId, @PathParam("guid") Integer guid, CharacterInstanceDTO entity);
+
+    @DELETE
+    @Path("/{instance_id}/character")
+    @Operation(summary = "Delete all character link for the given instance",
+        description = "This API is deleting all existing character links for the given instance ID."
+    )
+    @APIResponses(
+        value = {
+            @APIResponse(responseCode = "204", description = "The character links has been deleted", content = @Content(
+                        mediaType = "application/json"
+                )
+            ),
+            @APIResponse(responseCode = "400", description = "Error with the request"),
+            @APIResponse(responseCode = "500", description = "An unexpected even occured")
+        }
+    )
+    public Response deleteAllCharacterInstance(@PathParam("instance_id") Integer instanceId);
+
+    @DELETE
+    @Path("/{instance_id}/character/{guid}")
+    @Operation(summary = "Delete a character link",
+        description = "This API is deleting an existing character link based on the provided id."
+    )
+    @APIResponses(
+        value = {
+            @APIResponse(responseCode = "204", description = "The character link has been deleted", content = @Content(
+                        mediaType = "application/json"
+                )
+            ),
+            @APIResponse(responseCode = "400", description = "Error with the request"),
+            @APIResponse(responseCode = "500", description = "An unexpected even occured")
+        }
+    )
+    public Response deleteCharacterInstance(@PathParam("instance_id") Integer instanceId, @PathParam("guid") Integer guid);}
