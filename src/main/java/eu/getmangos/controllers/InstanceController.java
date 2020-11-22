@@ -171,6 +171,8 @@ public class InstanceController {
                 em.createNamedQuery("CreatureRespawn.pack").setParameter("newinstance", index).setParameter("instance", i.getId()).executeUpdate();
                 em.createNamedQuery("GameobjectRespawn.pack").setParameter("newinstance", index).setParameter("instance", i.getId()).executeUpdate();
                 // TODO - Add corpse, character_instance, group_instance
+                em.createNamedQuery("CharacterInstance.pack").setParameter("newinstance", index).setParameter("instance", i.getId()).executeUpdate();
+                em.createNamedQuery("GroupInstance.pack").setParameter("newinstance", index).setParameter("instance", i.getId()).executeUpdate();
             }
             index++;
         }
