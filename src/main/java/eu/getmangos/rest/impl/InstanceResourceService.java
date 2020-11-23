@@ -22,6 +22,7 @@ import eu.getmangos.dto.CreatureRespawnDTO;
 import eu.getmangos.dto.GameobjectRespawnDTO;
 import eu.getmangos.dto.GroupInstanceDTO;
 import eu.getmangos.dto.InstanceDTO;
+import eu.getmangos.dto.MessageDTO;
 import eu.getmangos.entities.CharacterInstance;
 import eu.getmangos.entities.CreatureRespawn;
 import eu.getmangos.entities.GameobjectRespawn;
@@ -35,7 +36,7 @@ import eu.getmangos.mapper.InstanceMapper;
 import eu.getmangos.rest.InstanceResource;
 
 @ApplicationScoped
-@Path("/v1")
+@Path("/instance/v1")
 @Tag(name = "instance")
 public class InstanceResourceService implements InstanceResource {
 
@@ -103,13 +104,13 @@ public class InstanceResourceService implements InstanceResource {
             entity = instanceController.find(instanceId);
         } catch (DAOException dao) {
             logger.debug("Error while retrieving the instance " + dao.getMessage());
-            return Response.status(500).build();
+            return Response.status(400).entity(new MessageDTO(dao.getMessage())).build();
         } finally {
             logger.debug("findInstance() exit.");
         }
 
         if (entity == null) {
-            return Response.status(404).build();
+            return Response.status(404).entity(new MessageDTO("Instance does not exist.")).build();
         }
 
         return Response.status(200).entity(instanceMapper.map(entity)).build();
@@ -153,11 +154,11 @@ public class InstanceResourceService implements InstanceResource {
         try {
             this.instanceController.create(instanceMapper.map(entity));
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
-        return Response.status(201).entity("Instance has been created.").build();
+        return Response.status(201).entity(new MessageDTO("Instance has been created.")).build();
     }
 
     @Override
@@ -167,11 +168,11 @@ public class InstanceResourceService implements InstanceResource {
             entity.setId(instanceId);
             this.instanceController.create(instanceMapper.map(entity));
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
-        return Response.status(201).entity("Instance has been created.").build();
+        return Response.status(201).entity(new MessageDTO("Instance has been created.")).build();
     }
 
     @Override
@@ -180,9 +181,9 @@ public class InstanceResourceService implements InstanceResource {
         try {
             this.instanceController.delete(instanceId);
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
         return Response.status(204).build();
     }
@@ -194,9 +195,9 @@ public class InstanceResourceService implements InstanceResource {
         try {
             this.instanceController.packInstances();
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         } finally {
             logger.debug("packInstances() exit.");
         }
@@ -246,13 +247,13 @@ public class InstanceResourceService implements InstanceResource {
             entity = creatureRespawnController.find(guid, instanceId);
         } catch (DAOException dao) {
             logger.debug("Error while retrieving the timer " + dao.getMessage());
-            return Response.status(500).build();
+            return Response.status(400).entity(new MessageDTO(dao.getMessage())).build();
         } finally {
             logger.debug("findCreatureRespawn() exit.");
         }
 
         if (entity == null) {
-            return Response.status(404).build();
+            return Response.status(404).entity(new MessageDTO("Respawn Timer not found.")).build();
         }
 
         return Response.status(200).entity(creatureMapper.map(entity)).build();
@@ -265,11 +266,11 @@ public class InstanceResourceService implements InstanceResource {
             entity.setInstance(instanceId);
             this.creatureRespawnController.create(creatureMapper.map(entity));
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
-        return Response.status(201).entity("Respawn Timer has been created.").build();
+        return Response.status(201).entity(new MessageDTO("Respawn Timer has been created.")).build();
     }
 
     @Override
@@ -280,9 +281,9 @@ public class InstanceResourceService implements InstanceResource {
             entity.setInstance(instanceId);
             this.creatureRespawnController.update(creatureMapper.map(entity));
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
         return Response.status(200).entity("Respawn Timer has been updated.").build();
     }
@@ -293,9 +294,9 @@ public class InstanceResourceService implements InstanceResource {
         try {
             this.creatureRespawnController.delete(instanceId, guid);
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
         return Response.status(204).build();
     }
@@ -306,9 +307,9 @@ public class InstanceResourceService implements InstanceResource {
         try {
             this.creatureRespawnController.deleteAllByInstance(instanceId);
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
         return Response.status(204).build();
     }
@@ -357,13 +358,13 @@ public class InstanceResourceService implements InstanceResource {
             entity = gameobjectRespawnController.find(guid, instanceId);
         } catch (DAOException dao) {
             logger.debug("Error while retrieving the timer " + dao.getMessage());
-            return Response.status(500).build();
+            return Response.status(400).entity(new MessageDTO(dao.getMessage())).build();
         } finally {
             logger.debug("findGameobjectRespawn() exit.");
         }
 
         if (entity == null) {
-            return Response.status(404).build();
+            return Response.status(404).entity(new MessageDTO("Respawn Timer not found.")).build();
         }
 
         return Response.status(200).entity(gameobjectMapper.map(entity)).build();
@@ -376,11 +377,11 @@ public class InstanceResourceService implements InstanceResource {
             entity.setInstance(instanceId);
             this.gameobjectRespawnController.create(gameobjectMapper.map(entity));
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
-        return Response.status(201).entity("Respawn Timer has been created.").build();
+        return Response.status(201).entity(new MessageDTO("Respawn Timer has been created.")).build();
     }
 
     @Override
@@ -391,11 +392,11 @@ public class InstanceResourceService implements InstanceResource {
             entity.setInstance(instanceId);
             this.gameobjectRespawnController.update(gameobjectMapper.map(entity));
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
-        return Response.status(200).entity("Respawn Timer has been updated.").build();
+        return Response.status(200).entity(new MessageDTO("Respawn Timer has been updated.")).build();
     }
 
     @Override
@@ -404,11 +405,11 @@ public class InstanceResourceService implements InstanceResource {
         try {
             this.gameobjectRespawnController.delete(instanceId, guid);
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
-        return Response.status(204).build();
+        return Response.status(204).entity(new MessageDTO("Respawn Timer has been deleted.")).build();
     }
 
     @Override
@@ -421,7 +422,7 @@ public class InstanceResourceService implements InstanceResource {
         } catch (Exception ex) {
             return Response.status(500).entity(ex.getMessage()).build();
         }
-        return Response.status(204).build();
+        return Response.status(204).entity(new MessageDTO("Respawn Timers have been deleted.")).build();
     }
 
     @Override
@@ -468,13 +469,13 @@ public class InstanceResourceService implements InstanceResource {
             entity = characterInstanceController.find(guid, instanceId);
         } catch (DAOException dao) {
             logger.debug("Error while retrieving the character link " + dao.getMessage());
-            return Response.status(500).build();
+            return Response.status(400).entity(new MessageDTO(dao.getMessage())).build();
         } finally {
             logger.debug("findCharacterInstance() exit.");
         }
 
         if (entity == null) {
-            return Response.status(404).build();
+            return Response.status(404).entity(new MessageDTO("No link found.")).build();
         }
 
         return Response.status(200).entity(characterMapper.map(entity)).build();
@@ -487,11 +488,11 @@ public class InstanceResourceService implements InstanceResource {
             entity.setInstance(instanceId);
             this.characterInstanceController.create(characterMapper.map(entity));
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
-        return Response.status(201).entity("Character link has been created.").build();
+        return Response.status(201).entity(new MessageDTO("Character link has been created.")).build();
     }
 
     @Override
@@ -502,11 +503,11 @@ public class InstanceResourceService implements InstanceResource {
             entity.setInstance(instanceId);
             this.characterInstanceController.update(characterMapper.map(entity));
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
-        return Response.status(200).entity("Character link has been updated.").build();
+        return Response.status(200).entity(new MessageDTO("Character link has been updated.")).build();
     }
 
     @Override
@@ -515,11 +516,11 @@ public class InstanceResourceService implements InstanceResource {
         try {
             this.characterInstanceController.delete(instanceId, guid);
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
-        return Response.status(204).build();
+        return Response.status(204).entity(new MessageDTO("Link has been deleted")).build();
     }
 
     @Override
@@ -528,11 +529,11 @@ public class InstanceResourceService implements InstanceResource {
         try {
             this.characterInstanceController.deleteAllByInstance(instanceId);
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
-        return Response.status(204).build();
+        return Response.status(204).entity(new MessageDTO("All links have been deleted.")).build();
     }
 
     @Override
@@ -579,13 +580,13 @@ public class InstanceResourceService implements InstanceResource {
             entity = groupInstanceController.find(guid, instanceId);
         } catch (DAOException dao) {
             logger.debug("Error while retrieving the group link " + dao.getMessage());
-            return Response.status(500).build();
+            return Response.status(400).entity(new MessageDTO(dao.getMessage())).build();
         } finally {
             logger.debug("findGroupInstance() exit.");
         }
 
         if (entity == null) {
-            return Response.status(404).build();
+            return Response.status(404).entity(new MessageDTO("Link does not exist.")).build();
         }
 
         return Response.status(200).entity(groupMapper.map(entity)).build();
@@ -598,11 +599,11 @@ public class InstanceResourceService implements InstanceResource {
             entity.setInstance(instanceId);
             this.groupInstanceController.create(groupMapper.map(entity));
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
-        return Response.status(201).entity("Group link has been created.").build();
+        return Response.status(201).entity(new MessageDTO("Group link has been created.")).build();
     }
 
     @Override
@@ -613,11 +614,11 @@ public class InstanceResourceService implements InstanceResource {
             entity.setInstance(instanceId);
             this.groupInstanceController.update(groupMapper.map(entity));
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(x.getMessage())).build();
         }
-        return Response.status(200).entity("Group link has been updated.").build();
+        return Response.status(200).entity(new MessageDTO("Group link has been updated.")).build();
     }
 
     @Override
@@ -626,11 +627,11 @@ public class InstanceResourceService implements InstanceResource {
         try {
             this.groupInstanceController.delete(instanceId, guid);
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
-        return Response.status(204).build();
+        return Response.status(204).entity(new MessageDTO("Link has been deleted.")).build();
     }
 
     @Override
@@ -639,10 +640,10 @@ public class InstanceResourceService implements InstanceResource {
         try {
             this.groupInstanceController.deleteAllByInstance(instanceId);
         } catch (DAOException daoEx) {
-            return Response.status(400).entity(daoEx.getMessage()).build();
+            return Response.status(400).entity(new MessageDTO(daoEx.getMessage())).build();
         } catch (Exception ex) {
-            return Response.status(500).entity(ex.getMessage()).build();
+            return Response.status(500).entity(new MessageDTO(ex.getMessage())).build();
         }
-        return Response.status(204).build();
+        return Response.status(204).entity(new MessageDTO("Links have been deleted.")).build();
     }
 }
