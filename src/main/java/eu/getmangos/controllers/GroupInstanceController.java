@@ -18,7 +18,7 @@ import eu.getmangos.entities.Instance;
 public class GroupInstanceController {
     @Inject private Logger logger;
 
-    @PersistenceContext(name = "CHAR_PU")
+    @PersistenceContext(unitName = "CHAR_PU")
     private EntityManager em;
 
     @Inject private InstanceController instanceController;
