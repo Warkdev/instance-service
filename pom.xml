@@ -125,7 +125,7 @@
         <plugin>
             <groupId>io.openliberty.tools</groupId>
             <artifactId>liberty-maven-plugin</artifactId>
-            <version>3.1</version>
+            <version>3.3.3</version>
             <configuration>
                 <serverName>instance-service</serverName>
             </configuration>
